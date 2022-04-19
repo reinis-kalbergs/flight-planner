@@ -4,6 +4,7 @@ import io.codelex.flightplanner.AddFlightRequest;
 import io.codelex.flightplanner.Flight;
 import io.codelex.flightplanner.errors.FlightAlreadyExists;
 import io.codelex.flightplanner.errors.ImpossibleDate;
+import io.codelex.flightplanner.errors.NoFlightFound;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,7 +15,7 @@ public class FlightService {
         this.flightRepository = flightRepository;
     }
 
-    public Flight passFlightInfo(AddFlightRequest addFlightRequest) throws FlightAlreadyExists, ImpossibleDate {
+    public synchronized Flight addFlight(AddFlightRequest addFlightRequest) throws FlightAlreadyExists, ImpossibleDate {
         long currentId = flightRepository.getId();
         Flight tempFlight = new Flight(currentId, addFlightRequest);
         if (!tempFlight.getDepartureTime().isBefore(tempFlight.getArrivalTime())) {
@@ -24,8 +25,10 @@ public class FlightService {
         return flightRepository.fetchFlight(currentId);
     }
 
-    public Flight fetchFlight(Long id) {
-        return flightRepository.fetchFlight(id);
+    public AddFlightRequest fetchFlight(Long id) throws NoFlightFound {
+        Flight flightRequest = flightRepository.fetchFlight(id);
+        // Convert to addFlightRequest to get the necessary Time Format
+        return new AddFlightRequest(flightRequest);
     }
 
     public void deleteFlight(Long id) {

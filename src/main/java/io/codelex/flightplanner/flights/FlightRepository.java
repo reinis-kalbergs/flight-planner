@@ -1,9 +1,10 @@
 package io.codelex.flightplanner.flights;
 
 import io.codelex.flightplanner.Flight;
-import io.codelex.flightplanner.errors.FlightAlreadyExists;
 import io.codelex.flightplanner.errors.NoFlightFound;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,31 +12,29 @@ import java.util.List;
 @Repository
 public class FlightRepository {
 
-    private List<Flight> allFlights = new ArrayList<>();
-    private long currentId;
+    private volatile List<Flight> allFlights = new ArrayList<>();
+    private volatile Long counter = 0L;
 
     public List<Flight> getAllFlights() {
         return allFlights;
     }
 
     public long getId() {
-        currentId++;
-        return currentId - 1;
+        return counter++;
     }
 
     public void clear() {
         allFlights.clear();
     }
 
-    public void addFlight(Flight flight) {
+    public synchronized void addFlight(Flight flight) {
         if (allFlights.contains(flight)) {
-            throw new FlightAlreadyExists();
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Such a flight already exists");
         }
         allFlights.add(flight);
-        System.out.println();
     }
 
-    public Flight fetchFlight(long id) throws NoFlightFound {
+    public Flight fetchFlight(Long id) throws NoFlightFound {
         for (Flight flight : allFlights) {
             if (flight.getId() == id) {
                 return flight;
@@ -44,7 +43,7 @@ public class FlightRepository {
         throw new NoFlightFound();
     }
 
-    public void deleteFlight(Long id) {
+    public synchronized void deleteFlight(Long id) {
         allFlights.removeIf(flight -> flight.getId() == id);
     }
 

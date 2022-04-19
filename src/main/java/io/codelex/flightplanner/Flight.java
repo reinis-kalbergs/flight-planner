@@ -1,5 +1,7 @@
 package io.codelex.flightplanner;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
@@ -9,7 +11,9 @@ public class Flight {
     private Airport from;
     private Airport to;
     private String carrier;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime departureTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime arrivalTime;
 
 
