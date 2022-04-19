@@ -1,4 +1,4 @@
-package io.codelex.flightplanner;
+package io.codelex.flightplanner.flights;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -45,14 +45,21 @@ public class Airport {
         this.airport = airport;
     }
 
-    @Override
-    public boolean equals(Object o) {
+    public boolean isEqualAirport(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Airport airport1 = (Airport) o;
         return country.equalsIgnoreCase(airport1.country.trim())
                 && this.city.equalsIgnoreCase(airport1.city.trim())
                 && this.airport.equalsIgnoreCase(airport1.airport.trim());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Airport airport1 = (Airport) o;
+        return Objects.equals(country, airport1.country) && Objects.equals(city, airport1.city) && Objects.equals(airport, airport1.airport);
     }
 
     @Override

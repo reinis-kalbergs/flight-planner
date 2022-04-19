@@ -1,14 +1,12 @@
 package io.codelex.flightplanner.customerapi;
 
-import io.codelex.flightplanner.AddFlightRequest;
-import io.codelex.flightplanner.Airport;
-import io.codelex.flightplanner.Flight;
-import io.codelex.flightplanner.errors.NoFlightFound;
-import io.codelex.flightplanner.flights.FlightService;
+import io.codelex.flightplanner.adminapi.AdminService;
+import io.codelex.flightplanner.flights.Airport;
+import io.codelex.flightplanner.flights.Flight;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -17,11 +15,12 @@ import java.util.List;
 @RequestMapping("/api")
 public class CustomerController {
     CustomerService customerService;
-    FlightService flightService;
+    AdminService adminService;
 
-    public CustomerController(CustomerService customerService, FlightService flightService) {
+    public CustomerController(CustomerService customerService, AdminService adminService) {
         this.customerService = customerService;
-        this.flightService = flightService;
+        //adminService is here to use fetchFlight
+        this.adminService = adminService;
     }
 
     @GetMapping("/airports")
@@ -30,24 +29,25 @@ public class CustomerController {
     }
 
     @GetMapping("/flights/{id}")
-    public ResponseEntity<AddFlightRequest> getFlight(@PathVariable("id") Long id) {
-        try {
-            return new ResponseEntity<>(flightService.fetchFlight(id), HttpStatus.OK);
-        } catch (NoFlightFound e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    @ResponseStatus(HttpStatus.OK)
+    public Flight getFlight(@PathVariable("id") Long id) {
+        return adminService.fetchFlight(id);
     }
 
     @PostMapping("/flights/search")
-    public ResponseEntity<PageResult<Flight>> searchFlight(@Valid @RequestBody SearchFlightsRequest searchFlightsRequest, BindingResult result) {
-        if (result.hasErrors() || isSameAirport(searchFlightsRequest)) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    @ResponseStatus(HttpStatus.OK)
+    public PageResult<Flight> searchFlight(@Valid @RequestBody SearchFlightsRequest searchFlightsRequest, BindingResult result) {
+        if (result.hasErrors()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(customerService.searchFlights(searchFlightsRequest), HttpStatus.OK);
+        checkIfSameAirport(searchFlightsRequest);
+        return customerService.searchFlights(searchFlightsRequest);
     }
 
-    private boolean isSameAirport(SearchFlightsRequest searchFlightsRequest) {
-        return searchFlightsRequest.getFrom().equalsIgnoreCase(searchFlightsRequest.getTo());
+    private void checkIfSameAirport(SearchFlightsRequest searchFlightsRequest) throws ResponseStatusException {
+        if (searchFlightsRequest.getFrom().equalsIgnoreCase(searchFlightsRequest.getTo())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
     }
 
 

@@ -1,4 +1,7 @@
-package io.codelex.flightplanner;
+package io.codelex.flightplanner.adminapi;
+
+import io.codelex.flightplanner.flights.Airport;
+import io.codelex.flightplanner.flights.Flight;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
