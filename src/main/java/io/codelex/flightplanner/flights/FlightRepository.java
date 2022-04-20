@@ -14,12 +14,8 @@ import java.util.stream.Collectors;
 @Repository
 public class FlightRepository {
 
-    private volatile List<Flight> allFlights = new ArrayList<>();
-    private volatile Long counter = 0L;
-
-    public List<Flight> getAllFlights() {
-        return allFlights;
-    }
+    private List<Flight> allFlights = new ArrayList<>();
+    private Long counter = 0L;
 
     public Long getId() {
         return counter++;
@@ -29,12 +25,14 @@ public class FlightRepository {
         allFlights.clear();
     }
 
-    public synchronized Flight addFlight(Flight flight) throws ResponseStatusException {
-        if (allFlights.contains(flight)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "This flight already exists");
+    public synchronized Flight addFlight(Flight addFlight) throws ResponseStatusException {
+        for (Flight flight : allFlights) {
+            if (flight.isSameFlight(addFlight)) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "This flight already exists");
+            }
         }
-        allFlights.add(flight);
-        return flight;
+        allFlights.add(addFlight);
+        return addFlight;
     }
 
     public Flight fetchFlight(Long id) {
@@ -48,9 +46,9 @@ public class FlightRepository {
 
     public PageResult<Flight> searchFlights(SearchFlightsRequest searchFlightsRequest) {
         final int RESULTS_PER_PAGE = 20;
+        PageResult<Flight> pageResult = new PageResult<>();
 
         List<Flight> flightList = filterResults(allFlights, searchFlightsRequest);
-        PageResult<Flight> pageResult = new PageResult<>();
         pageResult.setItems(flightList);
 
         pageResult.setPage((int) Math.ceil((double) flightList.size() / RESULTS_PER_PAGE));
@@ -75,17 +73,17 @@ public class FlightRepository {
     public List<Airport> searchByAirport(String airportSearch) {
         List<Airport> result = new ArrayList<>();
         for (Flight flight : allFlights) {
-            if (containsAirport(flight.getFrom(), airportSearch)) {
+            if (airportContainsText(flight.getFrom(), airportSearch)) {
                 result.add(flight.getFrom());
             }
-            if (containsAirport(flight.getTo(), airportSearch)) {
+            if (airportContainsText(flight.getTo(), airportSearch)) {
                 result.add(flight.getTo());
             }
         }
         return result;
     }
 
-    private boolean containsAirport(Airport airport, String text) {
+    private boolean airportContainsText(Airport airport, String text) {
         text = text.toLowerCase();
         return airport.getAirport().toLowerCase().contains(text) || airport.getCity().toLowerCase().contains(text) || airport.getCountry().toLowerCase().contains(text);
     }

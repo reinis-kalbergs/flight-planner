@@ -45,13 +45,12 @@ public class Airport {
         this.airport = airport;
     }
 
-    public boolean isEqualAirport(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Airport airport1 = (Airport) o;
-        return country.equalsIgnoreCase(airport1.country.trim())
-                && this.city.equalsIgnoreCase(airport1.city.trim())
-                && this.airport.equalsIgnoreCase(airport1.airport.trim());
+    public boolean isEqualAirport(Airport airport) {
+        if (this == airport) return true;
+        if (airport == null) return false;
+        return country.equalsIgnoreCase(airport.country.trim())
+                && this.city.equalsIgnoreCase(airport.city.trim())
+                && this.airport.equalsIgnoreCase(airport.airport.trim());
     }
 
     @Override

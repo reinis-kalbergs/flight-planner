@@ -26,7 +26,7 @@ public class Flight {
         this.arrivalTime = reformatDate(addFlightRequest.getArrivalTime());
     }
 
-    public Flight(long id, AddFlightRequest addFlightRequest) {
+    public Flight(Long id, AddFlightRequest addFlightRequest) {
         this.id = id;
         this.from = addFlightRequest.getFrom();
         this.to = addFlightRequest.getTo();
@@ -83,21 +83,29 @@ public class Flight {
         this.arrivalTime = arrivalTime;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Flight flight = (Flight) o;
-        return Objects.equals(from, flight.from) && Objects.equals(to, flight.to) && Objects.equals(carrier, flight.carrier) && Objects.equals(departureTime, flight.departureTime) && Objects.equals(arrivalTime, flight.arrivalTime);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(from, to, carrier, departureTime, arrivalTime);
+    public boolean isSameFlight(Flight flight) {
+        if (this == flight) return true;
+        if (flight == null) return false;
+        return this.from.isEqualAirport(flight.getFrom()) && this.to.isEqualAirport(flight.getTo())
+                && Objects.equals(carrier, flight.carrier) && Objects.equals(departureTime, flight.departureTime)
+                && Objects.equals(arrivalTime, flight.arrivalTime);
     }
 
     private LocalDateTime reformatDate(String dateTimeInString) {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         return LocalDateTime.parse(dateTimeInString, format);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Flight flight = (Flight) o;
+        return Objects.equals(id, flight.id) && Objects.equals(from, flight.from) && Objects.equals(to, flight.to) && Objects.equals(carrier, flight.carrier) && Objects.equals(departureTime, flight.departureTime) && Objects.equals(arrivalTime, flight.arrivalTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, from, to, carrier, departureTime, arrivalTime);
     }
 }
