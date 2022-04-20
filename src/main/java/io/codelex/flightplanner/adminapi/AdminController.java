@@ -34,7 +34,6 @@ public class AdminController {
     }
 
     @GetMapping("/flights/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public Flight getFlight(@PathVariable("id") Long id) {
         return adminService.fetchFlight(id);
     }

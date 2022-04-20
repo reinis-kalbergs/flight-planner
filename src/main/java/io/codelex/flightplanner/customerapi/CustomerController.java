@@ -29,13 +29,11 @@ public class CustomerController {
     }
 
     @GetMapping("/flights/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public Flight getFlight(@PathVariable("id") Long id) {
         return adminService.fetchFlight(id);
     }
 
     @PostMapping("/flights/search")
-    @ResponseStatus(HttpStatus.OK)
     public PageResult<Flight> searchFlight(@Valid @RequestBody SearchFlightsRequest searchFlightsRequest, BindingResult result) {
         if (result.hasErrors()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);

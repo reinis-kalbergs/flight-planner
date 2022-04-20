@@ -1,15 +1,12 @@
 package io.codelex.flightplanner.adminapi;
 
 import io.codelex.flightplanner.flights.Airport;
-import io.codelex.flightplanner.flights.Flight;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.format.DateTimeFormatter;
 
 public class AddFlightRequest {
-    private Long id;
     @NotNull
     @Valid
     private Airport from;
@@ -31,24 +28,6 @@ public class AddFlightRequest {
         this.carrier = carrier;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
-    }
-
-    public AddFlightRequest(Flight flight) {
-        this.id = flight.getId();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        this.from = flight.getFrom();
-        this.to = flight.getTo();
-        this.carrier = flight.getCarrier();
-        this.departureTime = flight.getDepartureTime().format(formatter);
-        this.arrivalTime = flight.getArrivalTime().format(formatter);
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public Airport getFrom() {
