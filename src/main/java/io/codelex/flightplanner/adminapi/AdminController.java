@@ -2,7 +2,6 @@ package io.codelex.flightplanner.adminapi;
 
 import io.codelex.flightplanner.flights.Flight;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -20,16 +19,13 @@ public class AdminController {
 
     @PutMapping("/flights")
     @ResponseStatus(HttpStatus.CREATED)
-    public Flight addFlight(@Valid @RequestBody AddFlightRequest addFlightRequest, BindingResult result) {
-        if (result.hasErrors()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given data is malformed");
-        }
+    public synchronized Flight addFlight(@Valid @RequestBody AddFlightRequest addFlightRequest) {
         checkIfSameAirport(addFlightRequest);
         return adminService.addFlight(addFlightRequest);
     }
 
     @DeleteMapping("/flights/{id}")
-    public void deleteFlight(@PathVariable("id") Long id) {
+    public synchronized void deleteFlight(@PathVariable("id") Long id) {
         adminService.deleteFlight(id);
     }
 

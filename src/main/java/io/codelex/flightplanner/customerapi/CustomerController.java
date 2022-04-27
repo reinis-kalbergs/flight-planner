@@ -4,7 +4,6 @@ import io.codelex.flightplanner.adminapi.AdminService;
 import io.codelex.flightplanner.flights.Airport;
 import io.codelex.flightplanner.flights.Flight;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -34,10 +33,7 @@ public class CustomerController {
     }
 
     @PostMapping("/flights/search")
-    public PageResult<Flight> searchFlight(@Valid @RequestBody SearchFlightsRequest searchFlightsRequest, BindingResult result) {
-        if (result.hasErrors()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
+    public PageResult<Flight> searchFlight(@Valid @RequestBody SearchFlightsRequest searchFlightsRequest) {
         checkIfSameAirport(searchFlightsRequest);
         return customerService.searchFlights(searchFlightsRequest);
     }

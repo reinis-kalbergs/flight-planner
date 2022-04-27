@@ -14,7 +14,7 @@ public class AdminService {
         this.flightRepository = flightRepository;
     }
 
-    public synchronized Flight addFlight(AddFlightRequest addFlightRequest) {
+    public Flight addFlight(AddFlightRequest addFlightRequest) {
         Flight flight = new Flight(flightRepository.getId(), addFlightRequest);
         checkDate(flight);
         return flightRepository.addFlight(flight);
@@ -30,7 +30,7 @@ public class AdminService {
         return flightRepository.fetchFlight(id);
     }
 
-    public synchronized void deleteFlight(Long id) {
+    public void deleteFlight(Long id) {
         flightRepository.deleteFlight(id);
     }
 

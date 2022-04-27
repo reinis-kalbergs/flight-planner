@@ -25,7 +25,7 @@ public class FlightRepository {
         allFlights.clear();
     }
 
-    public synchronized Flight addFlight(Flight addFlight) throws ResponseStatusException {
+    public Flight addFlight(Flight addFlight) throws ResponseStatusException {
         for (Flight flight : allFlights) {
             if (flight.isSameFlight(addFlight)) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "This flight already exists");
@@ -66,7 +66,7 @@ public class FlightRepository {
                 .collect(Collectors.toList());
     }
 
-    public synchronized void deleteFlight(Long id) {
+    public void deleteFlight(Long id) {
         allFlights.removeIf(flight -> flight.getId() == id);
     }
 
