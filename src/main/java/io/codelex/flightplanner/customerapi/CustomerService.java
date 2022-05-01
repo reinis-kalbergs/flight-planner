@@ -19,7 +19,7 @@ public class CustomerService {
         return flightRepository.searchFlights(searchFlightsRequest);
     }
 
-    public List<Airport> searchByAirport(String airportSearch) {
-        return flightRepository.searchByAirport(airportSearch.trim());
+    public List<Airport> searchAirports(String airportSearch) {
+        return flightRepository.searchAirports(airportSearch.trim());
     }
 }

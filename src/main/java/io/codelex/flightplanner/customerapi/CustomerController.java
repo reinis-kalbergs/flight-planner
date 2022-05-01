@@ -23,8 +23,8 @@ public class CustomerController {
     }
 
     @GetMapping("/airports")
-    public List<Airport> searchByAirport(@RequestParam String search) {
-        return customerService.searchByAirport(search);
+    public List<Airport> searchAirports(@RequestParam String search) {
+        return customerService.searchAirports(search);
     }
 
     @GetMapping("/flights/{id}")
@@ -38,7 +38,7 @@ public class CustomerController {
         return customerService.searchFlights(searchFlightsRequest);
     }
 
-    private void checkIfSameAirport(SearchFlightsRequest searchFlightsRequest) throws ResponseStatusException {
+    private void checkIfSameAirport(SearchFlightsRequest searchFlightsRequest) {
         if (searchFlightsRequest.getFrom().equalsIgnoreCase(searchFlightsRequest.getTo())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }

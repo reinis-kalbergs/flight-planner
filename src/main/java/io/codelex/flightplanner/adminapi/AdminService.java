@@ -20,7 +20,7 @@ public class AdminService {
         return flightRepository.addFlight(flight);
     }
 
-    private void checkDate(Flight flight) throws ResponseStatusException {
+    private void checkDate(Flight flight) {
         if (!flight.getDepartureTime().isBefore(flight.getArrivalTime())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Impossible date");
         }
