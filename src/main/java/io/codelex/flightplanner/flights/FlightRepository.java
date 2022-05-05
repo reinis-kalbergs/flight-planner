@@ -17,7 +17,7 @@ public class FlightRepository {
     private List<Flight> allFlights = new ArrayList<>();
     private Long counter = 0L;
 
-    public Long getId() {
+    private Long getId() {
         return counter++;
     }
 
@@ -26,6 +26,7 @@ public class FlightRepository {
     }
 
     public synchronized Flight addFlight(Flight addFlight) {
+        addFlight.setId(getId());
         for (Flight flight : allFlights) {
             if (flight.isSameFlight(addFlight)) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "This flight already exists");

@@ -15,7 +15,7 @@ public class AdminService {
     }
 
     public Flight addFlight(AddFlightRequest addFlightRequest) {
-        Flight flight = new Flight(flightRepository.getId(), addFlightRequest);
+        Flight flight = new Flight(addFlightRequest);
         checkDate(flight);
         return flightRepository.addFlight(flight);
     }
