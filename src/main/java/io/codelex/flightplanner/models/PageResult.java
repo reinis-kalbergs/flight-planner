@@ -1,4 +1,4 @@
-package io.codelex.flightplanner.customerapi;
+package io.codelex.flightplanner.models;
 
 import java.util.ArrayList;
 import java.util.List;

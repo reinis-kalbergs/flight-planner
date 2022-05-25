@@ -1,8 +1,11 @@
-package io.codelex.flightplanner.customerapi;
+package io.codelex.flightplanner.controllers;
 
-import io.codelex.flightplanner.adminapi.AdminService;
-import io.codelex.flightplanner.flights.Airport;
-import io.codelex.flightplanner.flights.Flight;
+import io.codelex.flightplanner.models.Airport;
+import io.codelex.flightplanner.models.Flight;
+import io.codelex.flightplanner.models.PageResult;
+import io.codelex.flightplanner.models.SearchFlightsRequest;
+import io.codelex.flightplanner.services.AdminService;
+import io.codelex.flightplanner.services.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;

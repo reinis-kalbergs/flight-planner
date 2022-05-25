@@ -1,7 +1,10 @@
-package io.codelex.flightplanner.flights;
+package io.codelex.flightplanner.inmemory;
 
-import io.codelex.flightplanner.customerapi.PageResult;
-import io.codelex.flightplanner.customerapi.SearchFlightsRequest;
+import io.codelex.flightplanner.models.Airport;
+import io.codelex.flightplanner.models.Flight;
+import io.codelex.flightplanner.models.PageResult;
+import io.codelex.flightplanner.models.SearchFlightsRequest;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.server.ResponseStatusException;
@@ -9,9 +12,12 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
+@ConditionalOnProperty(prefix = "flight-planner", name = "store-type", havingValue = "in-memory")
 public class FlightRepository {
 
     private List<Flight> allFlights = new ArrayList<>();
@@ -37,12 +43,13 @@ public class FlightRepository {
     }
 
     public Flight fetchFlight(Long id) {
-        for (Flight flight : allFlights) {
-            if (flight.getId() == id) {
-                return flight;
-            }
+        Optional<Flight> result = allFlights.stream()
+                .filter((flight) -> flight.getId().equals(id))
+                .findFirst();
+        if (result.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return result.get();
     }
 
     public PageResult<Flight> searchFlights(SearchFlightsRequest searchFlightsRequest) {
@@ -68,7 +75,7 @@ public class FlightRepository {
     }
 
     public synchronized void deleteFlight(Long id) {
-        allFlights.removeIf(flight -> flight.getId() == id);
+        allFlights.removeIf(flight -> Objects.equals(flight.getId(), id));
     }
 
     public List<Airport> searchAirports(String airportSearch) {
