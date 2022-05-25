@@ -1,22 +1,29 @@
-package io.codelex.flightplanner.flights;
+package io.codelex.flightplanner.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.codelex.flightplanner.adminapi.AddFlightRequest;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
+@Entity
 public class Flight {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "flight_sequence")
+    @Column(nullable = false)
     private Long id;
+    @JoinColumn(name = "from_id")
+    @ManyToOne
     private Airport from;
+    @JoinColumn(name = "to_id")
+    @ManyToOne
     private Airport to;
     private String carrier;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime departureTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime arrivalTime;
-
 
     public Flight(AddFlightRequest addFlightRequest) {
         this.from = addFlightRequest.getFrom();
@@ -26,20 +33,15 @@ public class Flight {
         this.arrivalTime = reformatDate(addFlightRequest.getArrivalTime());
     }
 
-    public Flight(Long id, AddFlightRequest addFlightRequest) {
-        this.id = id;
-        this.from = addFlightRequest.getFrom();
-        this.to = addFlightRequest.getTo();
-        this.carrier = addFlightRequest.getCarrier();
-        this.departureTime = reformatDate(addFlightRequest.getDepartureTime());
-        this.arrivalTime = reformatDate(addFlightRequest.getArrivalTime());
+    public Flight() {
+
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

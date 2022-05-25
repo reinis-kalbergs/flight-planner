@@ -1,4 +1,4 @@
-package io.codelex.flightplanner.customerapi;
+package io.codelex.flightplanner.models;
 
 import javax.validation.constraints.NotNull;
 import java.util.Objects;

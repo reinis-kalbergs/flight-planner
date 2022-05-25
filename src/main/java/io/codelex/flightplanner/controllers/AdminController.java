@@ -1,6 +1,8 @@
-package io.codelex.flightplanner.adminapi;
+package io.codelex.flightplanner.controllers;
 
-import io.codelex.flightplanner.flights.Flight;
+import io.codelex.flightplanner.models.AddFlightRequest;
+import io.codelex.flightplanner.models.Flight;
+import io.codelex.flightplanner.services.AdminService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
